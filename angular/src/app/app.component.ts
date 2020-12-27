@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/angular';
 import { INITIAL_EVENTS, createEventId } from './event-utils';
+import allLocales from '@fullcalendar/core/locales-all';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,11 @@ export class AppComponent {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
+    slotMinTime:'11:00:00',
+    slotMaxTime:'20:00:00',
+    slotDuration:'00:15:00',
+    locales: allLocales,
+    locale: 'es', // the initial locale
     initialView: 'dayGridMonth',
     initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
     weekends: true,
@@ -25,12 +31,14 @@ export class AppComponent {
     dayMaxEvents: true,
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this)
+    eventsSet: this.handleEvents.bind(this),
+
     /* you can update a remote database when these fire:
     eventAdd:
     eventChange:
     eventRemove:
     */
+
   };
   currentEvents: EventApi[] = [];
 
@@ -44,10 +52,12 @@ export class AppComponent {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
+    console.log('INFO', selectInfo);
     const title = prompt('Please enter a new title for your event');
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
+
 
     if (title) {
       calendarApi.addEvent({
